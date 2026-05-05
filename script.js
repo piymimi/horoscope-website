@@ -181,7 +181,7 @@ const getDailyHoroscope = (sign) => {
         const response = await fetch(`https://freehoroscopeapi.com/api/v1/get-horoscope/daily?sign=${sign.toLowerCase()}`);
         const data = await response.json();
         
-        if (data && data.data && data.data.horoscope) {
+        if (data && data.data && data.horoscope) {
             return {
                 main: data.data.horoscope,
                 love: 'Today brings passionate encounters and deep emotional connections. Focus on meaningful relationships and honest communication.',
