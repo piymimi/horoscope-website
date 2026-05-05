@@ -470,15 +470,30 @@ const showDetailedHoroscope = async (sign, dayOffset = 0) => {
     `;
     
     console.log('Setting detailed horoscope HTML');
-    document.getElementById('detailedHoroscope').innerHTML = detailedHtml;
+    const detailedHoroscopeEl = document.getElementById('detailedHoroscope');
+    if (detailedHoroscopeEl) {
+        detailedHoroscopeEl.innerHTML = detailedHtml;
+    } else {
+        console.error('detailedHoroscope element not found!');
+        return;
+    }
+    
     console.log('Removing hidden class, adding fade-in');
-    horoscopeDisplay.classList.remove('hidden');
-    horoscopeDisplay.classList.add('fade-in');
+    if (horoscopeDisplay) {
+        horoscopeDisplay.classList.remove('hidden');
+        horoscopeDisplay.classList.add('fade-in');
+    }
     console.log('Hiding zodiacSelection and zodiacGrid');
-    zodiacSelection.style.display = 'none';
-    zodiacGrid.style.display = 'none';
+    if (zodiacSelection) {
+        zodiacSelection.style.display = 'none';
+    }
+    if (zodiacGrid) {
+        zodiacGrid.style.display = 'none';
+    }
     console.log('Scrolling to horoscopeDisplay');
-    horoscopeDisplay.scrollIntoView({ behavior: 'smooth' });
+    if (horoscopeDisplay) {
+        horoscopeDisplay.scrollIntoView({ behavior: 'smooth' });
+    }
     
     attachDayNavigationListeners(sign);
     console.log('showDetailedHoroscope completed');
