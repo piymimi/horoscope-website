@@ -276,7 +276,7 @@ const adjustColor = (hex, percent) => {
 const createSignSelector = () => {
     const selector = document.getElementById('signSelector');
     selector.innerHTML = '';
-    
+
     zodiacSigns.forEach(sign => {
         const button = document.createElement('button');
         button.className = 'sign-option';
@@ -308,9 +308,6 @@ const createZodiacCard = (sign) => {
     card.addEventListener('click', () => showDetailedHoroscope(sign, 0));
     return card;
 };
-
-let currentSelectedSign = null;
-let currentDayOffset = 0;
 
 const getDailyHoroscope = async (sign, dayOffset = 0) => {
     try {
@@ -346,13 +343,13 @@ const getDailyHoroscope = async (sign, dayOffset = 0) => {
             main: dayOffset === 0
                 ? 'Today brings opportunities for personal growth and meaningful connections.'
                 : dayOffset === -1
-                    ? 'Chances for personal development were available. Reflect on those insights.'
+                    ? 'Chances for personal development were available. Reflect on those insights today.'
                     : 'Doors to new opportunities and connections open up.',
             love: dayOffset === 0
                 ? 'Focus on communication and building strong relationships through honesty and trust.'
                 : dayOffset === -1
                     ? 'Relationships provided insights that remain relevant. Build on those foundations.'
-                    : 'New romantic opportunities may arise. Stay open to connections.',
+                    : 'New romantic opportunities may arise tomorrow. Stay open to connections.',
             career: dayOffset === 0
                 ? 'Professional development is favored. Your skills and talents are in high demand.'
                 : dayOffset === -1
@@ -370,13 +367,13 @@ const getDailyHoroscope = async (sign, dayOffset = 0) => {
             main: dayOffset === 0
                 ? 'Today brings opportunities for personal growth and meaningful connections.'
                 : dayOffset === -1
-                    ? 'Chances for personal development were available. Reflect on those insights.'
+                    ? 'Chances for personal development were available. Reflect on those insights today.'
                     : 'Doors to new opportunities and connections open up.',
             love: dayOffset === 0
                 ? 'Focus on communication and building strong relationships through honesty and trust.'
                 : dayOffset === -1
                     ? 'Relationships provided insights that remain relevant. Build on those foundations.'
-                    : 'New romantic opportunities may arise. Stay open to connections.',
+                    : 'New romantic opportunities may arise tomorrow. Stay open to connections.',
             career: dayOffset === 0
                 ? 'Professional development is favored. Your skills and talents are in high demand.'
                 : dayOffset === -1
@@ -390,56 +387,9 @@ const getDailyHoroscope = async (sign, dayOffset = 0) => {
         };
     }
 };
-        }
-        
-        return {
-            main: dayOffset === 0
-                ? 'Today brings opportunities for personal growth and meaningful connections.'
-                : dayOffset === -1
-                    ? 'Yesterday offered chances for personal development. Reflect on those insights today.'
-                    : 'Tomorrow opens doors to new opportunities and connections.',
-            love: dayOffset === 0
-                ? 'Focus on communication and building strong relationships through honesty and trust.'
-                : dayOffset === -1
-                    ? 'Relationships from yesterday provide insights for today. Build on those foundations.'
-                    : 'New romantic opportunities may arise tomorrow. Stay open to connections.',
-            career: dayOffset === 0
-                ? 'Professional development is favored. Your skills and talents are in high demand.'
-                : dayOffset === -1
-                    ? 'Yesterday\'s work experiences prepare you for today\'s challenges. Use those lessons well.'
-                    : 'Career growth opportunities emerge tomorrow. Be ready to seize them.',
-            health: dayOffset === 0
-                ? 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
-                : dayOffset === -1
-                    ? 'Yesterday\'s health practices contribute to today\'s vitality. Maintain your wellness routine.'
-                    : 'Tomorrow is ideal for health improvements and self-care activities.'
-        };
-    } catch (error) {
-        console.error('Error fetching horoscope:', error);
-        return {
-            main: dayOffset === 0
-                ? 'Today brings opportunities for personal growth and meaningful connections.'
-                : dayOffset === -1
-                    ? 'Yesterday offered chances for personal development. Reflect on those insights today.'
-                    : 'Tomorrow opens doors to new opportunities and connections.',
-            love: dayOffset === 0
-                ? 'Focus on communication and building strong relationships through honesty and trust.'
-                : dayOffset === -1
-                    ? 'Relationships from yesterday provide insights for today. Build on those foundations.'
-                    : 'New romantic opportunities may arise tomorrow. Stay open to connections.',
-            career: dayOffset === 0
-                ? 'Professional development is favored. Your skills and talents are in high demand.'
-                : dayOffset === -1
-                    ? 'Yesterday\'s work experiences prepare you for today\'s challenges. Use those lessons well.'
-                    : 'Career growth opportunities emerge tomorrow. Be ready to seize them.',
-            health: dayOffset === 0
-                ? 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
-                : dayOffset === -1
-                    ? 'Yesterday\'s health practices contribute to today\'s vitality. Maintain your wellness routine.'
-                    : 'Tomorrow is ideal for health improvements and self-care activities.'
-        };
-    }
-};
+
+let currentSelectedSign = null;
+let currentDayOffset = 0;
 
 const showDetailedHoroscope = async (sign, dayOffset = 0) => {
     currentSelectedSign = sign;
