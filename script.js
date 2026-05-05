@@ -318,38 +318,79 @@ const createZodiacCard = (sign) => {
     return card;
 };
 
+const getSignSpecificHoroscope = (sign, dayOffset) => {
+    const date = new Date();
+    date.setDate(date.getDate() + dayOffset);
+    const dayOfMonth = date.getDate();
+    const baseIndex = (dayOfMonth - 1) % generalHoroscopes.length;
+    const signIndex = zodiacSigns.findIndex(s => s.name.toLowerCase() === sign.toLowerCase());
+    const uniqueIndex = (baseIndex + signIndex) % generalHoroscopes.length;
+    
+    const baseText = generalHoroscopes[uniqueIndex].text;
+    const dayLabel = dayOffset === 0 ? 'Today' : dayOffset === -1 ? 'Yesterday' : 'Tomorrow';
+    
+    const loveMessages = {
+        'Fire': `As a ${sign}, your passionate nature draws others to you ${dayLabel.toLowerCase()}. Express your feelings boldly and authentically.`,
+        'Earth': `Your practical and grounded approach to love serves you well ${dayLabel.toLowerCase()}. Stability and loyalty are your greatest assets in relationships.`,
+        'Air': `Communication is key for you ${dayLabel.toLowerCase()} as an Air sign. Engage in meaningful conversations and intellectual connections with loved ones.`,
+        'Water': `Your deep emotional sensitivity helps you connect on a profound level ${dayLabel.toLowerCase()}. Trust your intuition in matters of the heart.`
+    };
+    
+    const careerMessages = {
+        'Fire': `Your natural leadership and drive make this an excellent time ${dayLabel.toLowerCase()} to take initiative on ambitious projects. Your enthusiasm inspires others.`,
+        'Earth': `Focus on building long-term foundations ${dayLabel.toLowerCase()}. Your methodical approach will lead to sustainable success and financial growth.`,
+        'Air': `Networking and collaborative efforts bring opportunities ${dayLabel.toLowerCase()}. Your innovative ideas and adaptability are highly valued in the workplace.`,
+        'Water': `Trust your instincts in professional matters ${dayLabel.toLowerCase()}. Your creativity and emotional intelligence give you a unique advantage.`
+    };
+    
+    const healthMessages = {
+        'Fire': `Channel your abundant energy into physical activities ${dayLabel.toLowerCase()}. Balance intensity with proper rest to avoid burnout.`,
+        'Earth': `Focus on building healthy routines ${dayLabel.toLowerCase()}. Your body responds well to consistent exercise and nutritious habits.`,
+        'Air': `Mental stimulation and variety are crucial for your well-being ${dayLabel.toLowerCase()}. Try new activities that challenge your mind.`,
+        'Water': `Emotional balance is essential for your health ${dayLabel.toLowerCase()}. Practice mindfulness and activities that nourish your soul.`
+    };
+    
+    return {
+        main: baseText.replace(/Today/g, dayLabel),
+        love: loveMessages[sign.element] || loveMessages['Fire'],
+        career: careerMessages[sign.element] || careerMessages['Fire'],
+        health: healthMessages[sign.element] || healthMessages['Fire']
+    };
+};
+
 const getDailyHoroscope = async (sign, dayOffset = 0) => {
     try {
+        const zodiacSign = zodiacSigns.find(s => s.name.toLowerCase() === sign.toLowerCase());
+        if (!zodiacSign) {
+            return getSignSpecificHoroscope({ name: sign, element: 'Fire' }, dayOffset);
+        }
+        
         const date = new Date();
         date.setDate(date.getDate() + dayOffset);
         const dateStr = date.toISOString().split('T')[0];
         
-        const response = await fetch(`https://freehoroscopeapi.com/api/v1/get-horoscope/daily?sign=${sign.toLowerCase()}&date=${dateStr}`);
-        const data = await response.json();
-        
-        if (data && data.data && data.horoscope) {
-            return {
-                main: data.data.horoscope,
-                love: 'Today brings passionate encounters and deep emotional connections. Focus on meaningful relationships and honest communication.',
-                career: 'Professional opportunities emerge through your natural leadership. Take initiative on projects that align with your ambitious goals.',
-                health: 'Channel your abundant energy into physical activities. Balance intensity with proper rest and recovery.'
-            };
+        try {
+            const response = await fetch(`https://freehoroscopeapi.com/api/v1/get-horoscope/daily?sign=${sign.toLowerCase()}&date=${dateStr}`);
+            const data = await response.json();
+            
+            if (data && data.data && data.horoscope) {
+                const specific = getSignSpecificHoroscope(zodiacSign, dayOffset);
+                return {
+                    main: data.data.horoscope,
+                    love: specific.love,
+                    career: specific.career,
+                    health: specific.health
+                };
+            }
+        } catch (apiError) {
+            console.log('API not responding, using fallback horoscopes');
         }
         
-        return {
-            main: 'Today brings opportunities for personal growth and meaningful connections.',
-            love: 'Focus on communication and building strong relationships through honesty and trust.',
-            career: 'Professional development is favored. Your skills and talents are in high demand.',
-            health: 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
-        };
+        return getSignSpecificHoroscope(zodiacSign, dayOffset);
     } catch (error) {
-        console.error('Error fetching horoscope:', error);
-        return {
-            main: 'Today brings opportunities for personal growth and meaningful connections.',
-            love: 'Focus on communication and building strong relationships through honesty and trust.',
-            career: 'Professional development is favored. Your skills and talents are in high demand.',
-            health: 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
-        };
+        console.error('Error in getDailyHoroscope:', error);
+        const zodiacSign = zodiacSigns.find(s => s.name.toLowerCase() === sign.toLowerCase());
+        return getSignSpecificHoroscope(zodiacSign || { name: sign, element: 'Fire' }, dayOffset);
     }
 };
 let currentSelectedSign = null;
