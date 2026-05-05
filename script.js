@@ -335,7 +335,7 @@ const getDailyHoroscope = async (sign, dayOffset = 0) => {
                     ? 'Channel your abundant energy into physical activities. Balance intensity with proper rest and recovery.'
                     : dayOffset === -1
                         ? 'Physical activities set the stage for future vitality. Continue your wellness routine.'
-                        : 'Perfect for starting a new fitness or wellness routine.'
+                    : 'Perfect for starting a new fitness or wellness routine.'
             };
         }
         
@@ -343,23 +343,23 @@ const getDailyHoroscope = async (sign, dayOffset = 0) => {
             main: dayOffset === 0
                 ? 'Today brings opportunities for personal growth and meaningful connections.'
                 : dayOffset === -1
-                    ? 'Chances for personal development were available. Reflect on those insights today.'
-                    : 'Doors to new opportunities and connections open up.',
+                    ? 'Yesterday brought opportunities for personal development. Reflect on those insights.'
+                    : 'Tomorrow opens doors to new opportunities and connections.',
             love: dayOffset === 0
                 ? 'Focus on communication and building strong relationships through honesty and trust.'
                 : dayOffset === -1
-                    ? 'Relationships provided insights that remain relevant. Build on those foundations.'
-                    : 'New romantic opportunities may arise tomorrow. Stay open to connections.',
+                    ? 'Relationships provided valuable insights. Build on those strong foundations.'
+                    : 'New romantic opportunities may arise. Stay open to meaningful connections.',
             career: dayOffset === 0
                 ? 'Professional development is favored. Your skills and talents are in high demand.'
                 : dayOffset === -1
-                    ? 'Work experiences prepared you for current challenges. Use those lessons well.'
+                    ? 'Work experiences prepared you for today\'s challenges. Apply those lessons well.'
                     : 'Career growth opportunities emerge. Be ready to seize them.',
             health: dayOffset === 0
                 ? 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
                 : dayOffset === -1
-                    ? 'Health practices contribute to current vitality. Maintain your wellness routine.'
-                    : 'Ideal for health improvements and self-care activities.'
+                    ? 'Health practices strengthened your vitality. Continue your wellness routine.'
+                    : 'Perfect timing for health improvements and self-care activities.'
         };
     } catch (error) {
         console.error('Error fetching horoscope:', error);
