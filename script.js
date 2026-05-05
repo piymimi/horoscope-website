@@ -343,22 +343,22 @@ const getDailyHoroscope = async (sign, dayOffset = 0) => {
             main: dayOffset === 0
                 ? 'Today brings opportunities for personal growth and meaningful connections.'
                 : dayOffset === -1
-                    ? 'Yesterday brought opportunities for personal development. Reflect on those insights.'
+                    ? 'Yesterday brings opportunities for personal development. Reflect on those insights.'
                     : 'Tomorrow opens doors to new opportunities and connections.',
             love: dayOffset === 0
                 ? 'Focus on communication and building strong relationships through honesty and trust.'
                 : dayOffset === -1
-                    ? 'Relationships provided valuable insights. Build on those strong foundations.'
+                    ? 'Relationships offer valuable insights. Build on those strong foundations.'
                     : 'New romantic opportunities may arise. Stay open to meaningful connections.',
             career: dayOffset === 0
                 ? 'Professional development is favored. Your skills and talents are in high demand.'
                 : dayOffset === -1
-                    ? 'Work experiences prepared you for today\'s challenges. Apply those lessons well.'
+                    ? 'Work experiences provide valuable lessons for current challenges. Apply them well.'
                     : 'Career growth opportunities emerge. Be ready to seize them.',
             health: dayOffset === 0
                 ? 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
                 : dayOffset === -1
-                    ? 'Health practices strengthened your vitality. Continue your wellness routine.'
+                    ? 'Health practices strengthen your vitality. Continue your wellness routine.'
                     : 'Perfect timing for health improvements and self-care activities.'
         };
     } catch (error) {
