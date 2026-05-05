@@ -191,10 +191,10 @@ const getDailyHoroscope = (sign) => {
         }
         
         return {
-            main: 'Today favors bold actions and new beginnings. Trust your instincts and take calculated risks in love and career.',
-            love: 'Romantic opportunities may arise unexpectedly. Stay open to new connections and express your feelings clearly.',
-            career: 'Career advancement is possible through networking and innovation. Consider proposing new ideas that showcase your creativity.',
-            health: 'Maintain balance between activity and rest. Consider gentle exercises and stress management techniques.'
+            main: 'Today brings opportunities for personal growth and meaningful connections.',
+            love: 'Focus on communication and building strong relationships through honesty and trust.',
+            career: 'Professional development is favored. Your skills and talents are in high demand.',
+            health: 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
         };
     } catch (error) {
         console.error('Error fetching horoscope:', error);
