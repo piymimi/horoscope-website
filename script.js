@@ -327,19 +327,69 @@ const getDailyHoroscope = async (sign, dayOffset = 0) => {
                 love: dayOffset === 0 
                     ? 'Today brings passionate encounters and deep emotional connections. Focus on meaningful relationships and honest communication.'
                     : dayOffset === -1
-                        ? 'Energy favored meaningful conversations. Focus on strengthening existing bonds through honest and heartfelt communication.'
-                        : 'Brings opportunities for romantic connections. Be open to new encounters and express your true feelings.',
+                        ? 'Energy favors meaningful conversations. Focus on strengthening existing bonds through honest and heartfelt communication.'
+                        : 'Opportunities for romantic connections arise. Be open to new encounters and express your true feelings.',
                 career: dayOffset === 0
                     ? 'Professional opportunities emerge through your natural leadership. Take initiative on projects that align with your ambitious goals.'
                     : dayOffset === -1
-                        ? 'Efforts in your career laid groundwork for today\'s opportunities. Reflect on progress and build on your strengths.'
-                        : 'Favors career advancement. Stay proactive and seek out new challenges.',
+                        ? 'Efforts in your career laid groundwork for future opportunities. Reflect on progress and build on your strengths.'
+                        : 'Career advancement is favored. Stay proactive and seek out new challenges.',
                 health: dayOffset === 0
                     ? 'Channel your abundant energy into physical activities. Balance intensity with proper rest and recovery.'
                     : dayOffset === -1
-                        ? 'Physical activities set the stage for today\'s vitality. Continue your wellness routine.'
+                        ? 'Physical activities set the stage for future vitality. Continue your wellness routine.'
                         : 'Perfect for starting a new fitness or wellness routine.'
             };
+        }
+        
+        return {
+            main: dayOffset === 0
+                ? 'Today brings opportunities for personal growth and meaningful connections.'
+                : dayOffset === -1
+                    ? 'Chances for personal development were available. Reflect on those insights.'
+                    : 'Doors to new opportunities and connections open up.',
+            love: dayOffset === 0
+                ? 'Focus on communication and building strong relationships through honesty and trust.'
+                : dayOffset === -1
+                    ? 'Relationships provided insights that remain relevant. Build on those foundations.'
+                    : 'New romantic opportunities may arise. Stay open to connections.',
+            career: dayOffset === 0
+                ? 'Professional development is favored. Your skills and talents are in high demand.'
+                : dayOffset === -1
+                    ? 'Work experiences prepared you for current challenges. Use those lessons well.'
+                    : 'Career growth opportunities emerge. Be ready to seize them.',
+            health: dayOffset === 0
+                ? 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
+                : dayOffset === -1
+                    ? 'Health practices contribute to current vitality. Maintain your wellness routine.'
+                    : 'Ideal for health improvements and self-care activities.'
+        };
+    } catch (error) {
+        console.error('Error fetching horoscope:', error);
+        return {
+            main: dayOffset === 0
+                ? 'Today brings opportunities for personal growth and meaningful connections.'
+                : dayOffset === -1
+                    ? 'Chances for personal development were available. Reflect on those insights.'
+                    : 'Doors to new opportunities and connections open up.',
+            love: dayOffset === 0
+                ? 'Focus on communication and building strong relationships through honesty and trust.'
+                : dayOffset === -1
+                    ? 'Relationships provided insights that remain relevant. Build on those foundations.'
+                    : 'New romantic opportunities may arise. Stay open to connections.',
+            career: dayOffset === 0
+                ? 'Professional development is favored. Your skills and talents are in high demand.'
+                : dayOffset === -1
+                    ? 'Work experiences prepared you for current challenges. Use those lessons well.'
+                    : 'Career growth opportunities emerge. Be ready to seize them.',
+            health: dayOffset === 0
+                ? 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
+                : dayOffset === -1
+                    ? 'Health practices contribute to current vitality. Maintain your wellness routine.'
+                    : 'Ideal for health improvements and self-care activities.'
+        };
+    }
+};
         }
         
         return {
