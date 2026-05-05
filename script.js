@@ -314,7 +314,10 @@ const createZodiacCard = (sign) => {
         </div>
     `;
     
-    card.addEventListener('click', () => showDetailedHoroscope(sign, 0));
+    card.addEventListener('click', () => {
+        console.log('Zodiac card clicked for sign:', sign);
+        showDetailedHoroscope(sign, 0);
+    });
     return card;
 };
 
@@ -397,6 +400,7 @@ let currentSelectedSign = null;
 let currentDayOffset = 0;
 
 const showDetailedHoroscope = async (sign, dayOffset = 0) => {
+    console.log('showDetailedHoroscope called with sign:', sign, 'dayOffset:', dayOffset);
     currentSelectedSign = sign;
     currentDayOffset = dayOffset;
     
@@ -404,7 +408,12 @@ const showDetailedHoroscope = async (sign, dayOffset = 0) => {
     const zodiacSelection = document.getElementById('zodiacSelection');
     const zodiacGrid = document.getElementById('zodiacGrid');
     
+    console.log('horoscopeDisplay:', horoscopeDisplay);
+    console.log('zodiacSelection:', zodiacSelection);
+    console.log('zodiacGrid:', zodiacGrid);
+    
     const horoscope = await getDailyHoroscope(sign.name, dayOffset);
+    console.log('horoscope received:', horoscope);
     const luckyNumbers = generateLuckyNumbers();
     
     const titles = {
@@ -460,14 +469,19 @@ const showDetailedHoroscope = async (sign, dayOffset = 0) => {
         </div>
     `;
     
+    console.log('Setting detailed horoscope HTML');
     document.getElementById('detailedHoroscope').innerHTML = detailedHtml;
+    console.log('Removing hidden class, adding fade-in');
     horoscopeDisplay.classList.remove('hidden');
     horoscopeDisplay.classList.add('fade-in');
+    console.log('Hiding zodiacSelection and zodiacGrid');
     zodiacSelection.style.display = 'none';
     zodiacGrid.style.display = 'none';
+    console.log('Scrolling to horoscopeDisplay');
     horoscopeDisplay.scrollIntoView({ behavior: 'smooth' });
     
     attachDayNavigationListeners(sign);
+    console.log('showDetailedHoroscope completed');
 };
 
 const attachDayNavigationListeners = (sign) => {
