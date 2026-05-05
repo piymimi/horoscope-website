@@ -630,10 +630,79 @@ const generateLuckyNumbers = () => {
     return numbers;
 };
 
-const getDailyHoroscope = (sign) => {
+const getDailyHoroscope = async (sign) => {
+    try {
+        const response = await fetch(`https://freehoroscopeapi.com/api/v1/get-horoscope/daily?sign=${sign.toLowerCase()}`);
+        const data = await response.json();
+        return {
+            main: data.data.horoscope,
+            love: generateHoroscopeSection(sign, 'love'),
+            career: generateHoroscopeSection(sign, 'career'),
+            health: generateHoroscopeSection(sign, 'health')
+        };
+    } catch (error) {
+        console.error('Error fetching horoscope:', error);
+        return fallbackHoroscope(sign);
+    }
+};
+
+const generateHoroscopeSection = (sign, type) => {
+    const sections = {
+        love: {
+            'Aries': 'Today brings passionate encounters and deep emotional connections. Your ruling planet Mars energizes romance, making this an excellent time for bold romantic gestures and meaningful conversations.',
+            'Taurus': 'Love and harmony surround you today. Venus, your ruling planet, enhances beauty and pleasure in relationships. Create romantic moments through thoughtful gestures and quality time together.',
+            'Gemini': 'Communication lights up your romantic life. Mercury\'s influence makes conversations sparkling and connections meaningful. Share your thoughts freely - someone special is listening.',
+            'Cancer': 'Your emotional intelligence is heightened in love. The Moon\'s nurturing energy creates deep, intimate bonds. Trust your instincts when expressing affection to loved ones.',
+            'Leo': 'Your magnetic charm attracts romantic attention. The Sun\'s presence makes you naturally radiant and confident in love matters. Let your heart lead - passion follows naturally.',
+            'Virgo': 'Thoughtful gestures strengthen relationships today. Mercury\'s analytical approach helps you express love through acts of service and meaningful support. Show you care through practical kindness.',
+            'Libra': 'Balance and harmony define your romantic energy. Venus brings diplomatic skills to relationships, creating peaceful partnerships and beautiful, balanced connections.',
+            'Scorpio': 'Intensity and passion deepen love bonds today. Pluto\'s transformative energy brings emotional depth and powerful connections. Trust your powerful intuition in matters of the heart.',
+            'Sagittarius': 'Adventure and optimism enhance romance. Jupiter expands your social circle and brings opportunities for exciting romantic experiences. Be open to spontaneous romantic encounters.',
+            'Capricorn': 'Commitment and reliability strengthen love. Saturn\'s serious energy helps you build lasting, meaningful relationships through dedication and patient emotional investment.',
+            'Aquarius': 'Innovation and originality attract unique partners. Uranus brings unconventional romantic energy - expect surprising and exciting connections that break from tradition.',
+            'Pisces': 'Dreamy romance and emotional connections flourish. Neptune\'s mystical energy enhances intuition and brings soulful, transcendent love experiences. Trust your vivid imagination in love.'
+        },
+        career: {
+            'Aries': 'Leadership opportunities emerge naturally today. Mars gives you the drive to take initiative and impress with bold, decisive actions. Your pioneering spirit is especially valued in professional settings.',
+            'Taurus': 'Financial prospects improve with careful planning. Venus helps you build lasting value and material security. Patient, methodical work leads to significant professional gains.',
+            'Gemini': 'Communication skills drive career success. Mercury enhances your ability to network, negotiate, and present ideas effectively. Your adaptability impresses supervisors and clients.',
+            'Cancer': 'Emotional intelligence aids professional growth. Moon\'s nurturing energy makes you an exceptional team player. Your intuition helps read workplace dynamics accurately.',
+            'Leo': 'Creative leadership shines in career today. Sun\'s presence commands attention and respect. Your natural charisma makes you an inspiring leader and confident presenter.',
+            'Virgo': 'Attention to detail brings professional recognition. Mercury\'s analytical skills help you solve complex problems. Your methodical approach earns respect from colleagues and supervisors.',
+            'Libra': 'Diplomatic skills advance career prospects. Venus helps you build valuable professional relationships and mediate conflicts successfully. Your balanced approach is highly valued.',
+            'Scorpio': 'Investigative abilities reveal career opportunities. Pluto brings transformative energy - perfect for research, analysis, and uncovering hidden professional advantages.',
+            'Sagittarius': 'Optimism opens new career paths. Jupiter expands your professional horizons and brings opportunities for growth, learning, and advancement through enthusiasm.',
+            'Capricorn': 'Disciplined work ethic leads to success. Saturn strengthens your professional foundation. Your methodical approach to goal achievement earns recognition and long-term stability.',
+            'Aquarius': 'Innovation drives career progress. Uranus brings unconventional ideas and technological aptitude. Your original thinking helps solve problems creatively and impressively.',
+            'Pisces': 'Creativity and intuition guide career success. Neptune enhances imagination and emotional intelligence in professional settings. Trust your artistic and healing abilities.'
+        },
+        health: {
+            'Aries': 'Channel abundant energy into challenging physical activities. Mars strengthens physical vitality - perfect for competitive sports or intense workouts that build stamina.',
+            'Taurus': 'Sensory wellness practices bring balance. Venus encourages nurturing the body through massage, comfortable environments, and beauty routines that feel luxurious yet restorative.',
+            'Gemini': 'Mental stimulation supports overall health. Mercury benefits intellectual wellness through puzzles, learning, and communication. Balance mental activity with regular physical movement.',
+            'Cancer': 'Emotional wellness directly impacts physical health. Moon\'s nurturing energy supports healing through water-based activities, meditation, and creating peaceful, restorative environments.',
+            'Leo': 'Vitality and enthusiasm energize physical activities. Sun boosts energy levels - perfect for expressive movement, dance, or competitive sports that showcase your natural radiance.',
+            'Virgo': 'Health routines benefit from analytical planning. Mercury supports systematic wellness through careful nutrition tracking, structured exercise programs, and health monitoring apps.',
+            'Libra': 'Balance is key to your well-being today. Venus encourages harmonious wellness through partner exercises, yoga, and activities that bring both beauty and health benefits.',
+            'Scorpio': 'Transformative wellness practices support deep healing. Pluto brings regeneration energy - perfect for releasing old patterns, emotional release work, and powerful therapeutic activities.',
+            'Sagittarius': 'Adventure and exploration boost physical vitality. Jupiter encourages trying new activities, outdoor sports, and wellness routines that feel expansive and joyful rather than restrictive.',
+            'Capricorn': 'Structured health routines bring lasting results. Saturn supports disciplined wellness through consistent schedules, goal-oriented fitness, and methodical approaches to physical and mental health.',
+            'Aquarius': 'Innovative wellness approaches suit your needs. Uranus brings unconventional fitness ideas, cutting-edge health technologies, and unique approaches to wellness that break from tradition.',
+            'Pisces': 'Holistic wellness practices integrate mind and body. Neptune supports spiritual wellness through meditation, energy healing, water therapy, and practices that connect physical, mental, and emotional health.'
+        }
+    };
+    return sections[type][sign] || `${sign} - Focus on ${type} today with careful attention to details and thoughtful action.`;
+};
+
+const fallbackHoroscope = (sign) => {
     const today = new Date().getDate();
     const horoscopeList = horoscopes[sign];
-    return horoscopeList[today % horoscopeList.length];
+    return {
+        main: horoscopeList[today % horoscopeList.length],
+        love: generateHoroscopeSection(sign, 'love'),
+        career: generateHoroscopeSection(sign, 'career'),
+        health: generateHoroscopeSection(sign, 'health')
+    };
 };
 
 const getPlanetaryPositions = (sign) => {
@@ -698,12 +767,12 @@ const createZodiacCard = (sign) => {
     return card;
 };
 
-const showDetailedHoroscope = (sign) => {
+const showDetailedHoroscope = async (sign) => {
     const horoscopeDisplay = document.getElementById('horoscopeDisplay');
     const zodiacSelection = document.getElementById('zodiacSelection');
     const zodiacGrid = document.getElementById('zodiacGrid');
     
-    const horoscope = getDailyHoroscope(sign.name);
+    const horoscope = await getDailyHoroscope(sign.name);
     const luckyNumbers = generateLuckyNumbers();
     const planets = getPlanetaryPositions(sign.name);
     
