@@ -139,13 +139,15 @@ const createSignSelector = () => {
     zodiacSigns.forEach(sign => {
         const button = document.createElement('button');
         button.className = 'sign-option';
-        button.style.background = `linear-gradient(135deg, ${sign.color} 0%, ${adjustColor(sign.color, -20)} 100%)`;
         button.innerHTML = `
             <i class="fas ${sign.icon}"></i>
             <span>${sign.name}</span>
-            <span style="font-size: 0.7rem; opacity: 0.9;">${sign.symbol}</span>
+            <span>${sign.symbol}</span>
         `;
-        button.addEventListener('click', () => showDetailedHoroscope(sign));
+        button.addEventListener('click', () => {
+            button.classList.add('active');
+            setTimeout(() => showDetailedHoroscope(sign), 200);
+        });
         selector.appendChild(button);
     });
 };
@@ -153,21 +155,20 @@ const createSignSelector = () => {
 const createZodiacCard = (sign) => {
     const card = document.createElement('div');
     card.className = 'zodiac-card';
-    card.style.borderColor = sign.color;
     
     const luckyNumbers = generateLuckyNumbers();
     
     card.innerHTML = `
         <div class="zodiac-header">
-            <div class="zodiac-symbol" style="color: ${sign.color};">${sign.symbol}</div>
+            <div class="zodiac-symbol">${sign.symbol}</div>
             <div class="zodiac-info">
-                <h2 style="color: ${sign.color};">${sign.name}</h2>
+                <h2>${sign.name}</h2>
                 <p class="zodiac-dates">${sign.dates} • ${sign.element}</p>
             </div>
         </div>
         <p class="horoscope-text">Click to see today's horoscope and lucky numbers</p>
         <div class="lucky-numbers">
-            ${luckyNumbers.map(num => `<span style="background: ${sign.color};">${num}</span>`).join('')}
+            ${luckyNumbers.map(num => `<span>${num}</span>`).join('')}
         </div>
     `;
     
@@ -216,47 +217,48 @@ const showDetailedHoroscope = async (sign) => {
     
     const detailedHtml = `
         <div class="horoscope-header">
-            <div class="sign-icon" style="background: ${sign.color};">
+            <div class="sign-icon">
                 <i class="fas ${sign.icon}"></i>
             </div>
             <div class="sign-title">
-                <h2 style="color: ${sign.color};">${sign.name}</h2>
+                <h2>${sign.name}</h2>
                 <p>${sign.dates} • ${sign.element} • Ruled by ${sign.rulingPlanet}</p>
             </div>
         </div>
         
         <div class="horoscope-content">
             <div class="horoscope-section">
-                <h3 class="section-title" style="color: ${sign.color};"><i class="fas fa-star"></i> Daily Overview</h3>
+                <h3 class="section-title"><i class="fas fa-star"></i> Daily Overview</h3>
                 <p>${horoscope.main}</p>
             </div>
             
             <div class="horoscope-section">
-                <h3 class="section-title" style="color: ${sign.color};"><i class="fas fa-heart"></i> Love & Relationships</h3>
+                <h3 class="section-title"><i class="fas fa-heart"></i> Love & Relationships</h3>
                 <p>${horoscope.love}</p>
             </div>
             
             <div class="horoscope-section">
-                <h3 class="section-title" style="color: ${sign.color};"><i class="fas fa-briefcase"></i> Career & Finances</h3>
+                <h3 class="section-title"><i class="fas fa-briefcase"></i> Career & Finances</h3>
                 <p>${horoscope.career}</p>
             </div>
             
             <div class="horoscope-section">
-                <h3 class="section-title" style="color: ${sign.color};"><i class="fas fa-heart-pulse"></i> Health & Wellness</h3>
+                <h3 class="section-title"><i class="fas fa-heart-pulse"></i> Health & Wellness</h3>
                 <p>${horoscope.health}</p>
             </div>
         </div>
         
-        <div class="lucky-numbers-section" style="border-left: 4px solid ${sign.color};">
-            <h3 class="section-title" style="color: ${sign.color};"><i class="fas fa-clover"></i> Your Lucky Numbers Today</h3>
+        <div class="lucky-numbers-section">
+            <h3 class="section-title"><i class="fas fa-clover"></i> Your Lucky Numbers Today</h3>
             <div class="lucky-numbers">
-                ${luckyNumbers.map(num => `<span style="background: ${sign.color};">${num}</span>`).join('')}
+                ${luckyNumbers.map(num => `<span>${num}</span>`).join('')}
             </div>
         </div>
     `;
     
     document.getElementById('detailedHoroscope').innerHTML = detailedHtml;
-    horoscopeDisplay.style.display = 'block';
+    horoscopeDisplay.classList.remove('hidden');
+    horoscopeDisplay.classList.add('fade-in');
     zodiacSelection.style.display = 'none';
     zodiacGrid.style.display = 'none';
     horoscopeDisplay.scrollIntoView({ behavior: 'smooth' });
@@ -267,9 +269,10 @@ const hideDetailedHoroscope = () => {
     const zodiacSelection = document.getElementById('zodiacSelection');
     const zodiacGrid = document.getElementById('zodiacGrid');
     
-    horoscopeDisplay.style.display = 'none';
+    horoscopeDisplay.classList.add('hidden');
     zodiacSelection.style.display = 'block';
     zodiacGrid.style.display = 'grid';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 const init = () => {
