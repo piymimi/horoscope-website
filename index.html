@@ -19,27 +19,32 @@
             <p id="currentDate" class="date"></p>
         </header>
 
+        <div id="zodiacSelection" class="zodiac-selection fade-in">
+            <div class="section-header">
+                <h2><i class="fas fa-star"></i> Choose Your Zodiac Sign</h2>
+                <p class="section-subtitle">Discover what the stars have aligned for you today</p>
+            </div>
+            <div id="zodiacGrid" class="zodiac-grid"></div>
+        </div>
+
         <div id="generalHoroscope" class="general-horoscope">
+            <div class="day-navigation">
+                <button class="day-tab" data-day="-1"><i class="fas fa-chevron-left"></i> Yesterday</button>
+                <button class="day-tab active" data-day="0">Today</button>
+                <button class="day-tab" data-day="1">Tomorrow <i class="fas fa-chevron-right"></i></button>
+            </div>
             <div class="horoscope-card">
                 <div class="horoscope-icon">
                     <i class="fas fa-sun"></i>
                 </div>
                 <div class="horoscope-content">
-                    <h3>Today's Cosmic Energy</h3>
+                    <h3 id="generalHoroscopeTitle">Today's Cosmic Energy</h3>
                     <p id="generalHoroscopeText">Loading...</p>
                 </div>
             </div>
         </div>
 
         <div id="signSelector" class="sign-selector"></div>
-
-        <div id="zodiacSelection" class="zodiac-selection fade-in">
-            <div class="section-header">
-                <h2><i class="fas fa-star"></i> Select Your Zodiac Sign</h2>
-                <p class="section-subtitle">Discover what the stars have aligned for you today</p>
-            </div>
-            <div id="zodiacGrid" class="zodiac-grid"></div>
-        </div>
 
         <div id="horoscopeDisplay" class="horoscope-display hidden">
             <button id="backButton" class="back-button">

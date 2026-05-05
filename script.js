@@ -94,15 +94,35 @@ const generalHoroscopes = [
     }
 ];
 
-const getGeneralHoroscope = () => {
-    const dayOfMonth = new Date().getDate();
+const getGeneralHoroscope = (dayOffset = 0) => {
+    const date = new Date();
+    date.setDate(date.getDate() + dayOffset);
+    const dayOfMonth = date.getDate();
     const index = (dayOfMonth - 1) % generalHoroscopes.length;
-    return generalHoroscopes[index];
+    return {
+        text: generalHoroscopes[index].text,
+        date: date.toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        }),
+        dayOffset: dayOffset
+    };
 };
 
-const loadGeneralHoroscope = () => {
+const loadGeneralHoroscope = (dayOffset = 0) => {
     const horoscopeText = document.getElementById('generalHoroscopeText');
-    const horoscope = getGeneralHoroscope();
+    const horoscopeTitle = document.getElementById('generalHoroscopeTitle');
+    const horoscope = getGeneralHoroscope(dayOffset);
+    
+    const titles = {
+        '-1': "Yesterday's Cosmic Energy",
+        '0': "Today's Cosmic Energy",
+        '1': "Tomorrow's Cosmic Energy"
+    };
+    
+    horoscopeTitle.textContent = titles[dayOffset.toString()];
     
     horoscopeText.style.opacity = '0';
     setTimeout(() => {
@@ -269,19 +289,11 @@ const createZodiacCard = (sign) => {
     const card = document.createElement('div');
     card.className = 'zodiac-card';
     
-    const luckyNumbers = generateLuckyNumbers();
-    
     card.innerHTML = `
-        <div class="zodiac-header">
-            <div class="zodiac-symbol">${sign.symbol}</div>
-            <div class="zodiac-info">
-                <h2>${sign.name}</h2>
-                <p class="zodiac-dates">${sign.dates} • ${sign.element}</p>
-            </div>
-        </div>
-        <p class="horoscope-text">Click to see today's horoscope and lucky numbers</p>
-        <div class="lucky-numbers">
-            ${luckyNumbers.map(num => `<span>${num}</span>`).join('')}
+        <div class="zodiac-symbol">${sign.symbol}</div>
+        <div class="zodiac-info">
+            <h2>${sign.name}</h2>
+            <p class="zodiac-dates">${sign.dates}<br>${sign.element}</p>
         </div>
     `;
     
@@ -406,6 +418,16 @@ const init = () => {
     });
 
     document.getElementById('backButton').addEventListener('click', hideDetailedHoroscope);
+
+    const dayTabs = document.querySelectorAll('.day-tab');
+    dayTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            dayTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const dayOffset = parseInt(tab.getAttribute('data-day'));
+            loadGeneralHoroscope(dayOffset);
+        });
+    });
 };
 
 document.addEventListener('DOMContentLoaded', init);
