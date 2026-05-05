@@ -325,32 +325,34 @@ const getDailyHoroscope = async (sign, dayOffset = 0) => {
         date.setDate(date.getDate() + dayOffset);
         const dateStr = date.toISOString().split('T')[0];
         
-        const signIndex = zodiacSigns.findIndex(s => s.name.toLowerCase() === sign.toLowerCase());
-        const generalHoroscopeIndex = (date.getDate() + dayOffset - 1 + 31) % generalHoroscopes.length;
-        const baseHoroscope = generalHoroscopes[generalHoroscopeIndex % generalHoroscopes.length];
-        
         const response = await fetch(`https://freehoroscopeapi.com/api/v1/get-horoscope/daily?sign=${sign.toLowerCase()}&date=${dateStr}`);
         const data = await response.json();
         
         if (data && data.data && data.horoscope) {
             return {
                 main: data.data.horoscope,
-                love: dayOffset === 0 
-                    ? `Today brings passionate encounters and deep emotional connections for ${sign}. Focus on meaningful relationships and honest communication.`
-                    : dayOffset === -1
-                        ? `Yesterday brought opportunities for personal growth related to ${sign}. Reflect on those insights.`
-                        : `Tomorrow opens doors to new opportunities and romantic connections for ${sign}. Be open to new encounters.`,
-                career: dayOffset === 0
-                    ? `Professional opportunities emerge through your natural leadership as ${sign}. Take initiative on projects that align with your ambitious goals.`
-                    : dayOffset === -1
-                        ? `Efforts in your career laid groundwork for today's opportunities as ${sign}. Reflect on progress and build on your strengths.`
-                        : `Career advancement is favored for ${sign}. Stay proactive and seek out new challenges.`,
-                health: dayOffset === 0
-                    ? `Channel your abundant energy into physical activities. Balance intensity with proper rest and recovery.`
-                    : dayOffset === -1
-                        ? `Physical activities set the stage for today's vitality as ${sign}. Continue your wellness routine.`
-                        : `Perfect timing for health improvements and self-care activities for ${sign}.`
+                love: 'Today brings passionate encounters and deep emotional connections. Focus on meaningful relationships and honest communication.',
+                career: 'Professional opportunities emerge through your natural leadership. Take initiative on projects that align with your ambitious goals.',
+                health: 'Channel your abundant energy into physical activities. Balance intensity with proper rest and recovery.'
             };
+        }
+        
+        return {
+            main: 'Today brings opportunities for personal growth and meaningful connections.',
+            love: 'Focus on communication and building strong relationships through honesty and trust.',
+            career: 'Professional development is favored. Your skills and talents are in high demand.',
+            health: 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
+        };
+    } catch (error) {
+        console.error('Error fetching horoscope:', error);
+        return {
+            main: 'Today brings opportunities for personal growth and meaningful connections.',
+            love: 'Focus on communication and building strong relationships through honesty and trust.',
+            career: 'Professional development is favored. Your skills and talents are in high demand.',
+            health: 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
+        };
+    }
+};
         }
         
         const signSpecificHoroscope = {
