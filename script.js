@@ -155,7 +155,6 @@ const createZodiacCard = (sign) => {
     card.className = 'zodiac-card';
     card.style.borderColor = sign.color;
     
-    const horoscope = getDailyHoroscope(sign.name);
     const luckyNumbers = generateLuckyNumbers();
     
     card.innerHTML = `
@@ -166,7 +165,7 @@ const createZodiacCard = (sign) => {
                 <p class="zodiac-dates">${sign.dates} • ${sign.element}</p>
             </div>
         </div>
-        <p class="horoscope-text">${horoscope.main.substring(0, 120)}...</p>
+        <p class="horoscope-text">Click to see today's horoscope and lucky numbers</p>
         <div class="lucky-numbers">
             ${luckyNumbers.map(num => `<span style="background: ${sign.color};">${num}</span>`).join('')}
         </div>
@@ -176,7 +175,7 @@ const createZodiacCard = (sign) => {
     return card;
 };
 
-const getDailyHoroscope = (sign) => {
+const getDailyHoroscope = async (sign) => {
     try {
         const response = await fetch(`https://freehoroscopeapi.com/api/v1/get-horoscope/daily?sign=${sign.toLowerCase()}`);
         const data = await response.json();
