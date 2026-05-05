@@ -327,18 +327,18 @@ const getDailyHoroscope = async (sign, dayOffset = 0) => {
                 love: dayOffset === 0 
                     ? 'Today brings passionate encounters and deep emotional connections. Focus on meaningful relationships and honest communication.'
                     : dayOffset === -1
-                        ? 'Yesterday\'s energy favored meaningful conversations. Focus on strengthening existing bonds through honest and heartfelt communication.'
-                        : 'Tomorrow brings opportunities for romantic connections. Be open to new encounters and express your true feelings.',
+                        ? 'Energy favored meaningful conversations. Focus on strengthening existing bonds through honest and heartfelt communication.'
+                        : 'Brings opportunities for romantic connections. Be open to new encounters and express your true feelings.',
                 career: dayOffset === 0
                     ? 'Professional opportunities emerge through your natural leadership. Take initiative on projects that align with your ambitious goals.'
                     : dayOffset === -1
-                        ? 'Yesterday\'s efforts in your career laid groundwork for today\'s opportunities. Reflect on progress and build on your strengths.'
-                        : 'Tomorrow favors career advancement. Stay proactive and seek out new challenges.',
+                        ? 'Efforts in your career laid groundwork for today\'s opportunities. Reflect on progress and build on your strengths.'
+                        : 'Favors career advancement. Stay proactive and seek out new challenges.',
                 health: dayOffset === 0
                     ? 'Channel your abundant energy into physical activities. Balance intensity with proper rest and recovery.'
                     : dayOffset === -1
-                        ? 'Yesterday\'s physical activities set the stage for today\'s vitality. Continue your wellness routine.'
-                        : 'Tomorrow is perfect for starting a new fitness or wellness routine.'
+                        ? 'Physical activities set the stage for today\'s vitality. Continue your wellness routine.'
+                        : 'Perfect for starting a new fitness or wellness routine.'
             };
         }
         
@@ -410,9 +410,9 @@ const showDetailedHoroscope = async (sign, dayOffset = 0) => {
     
     const detailedHtml = `
         <div class="day-navigation">
-            <button class="day-tab" data-day="-1"><i class="fas fa-chevron-left"></i> Yesterday</button>
-            <button class="day-tab active" data-day="0">Today</button>
-            <button class="day-tab" data-day="1">Tomorrow <i class="fas fa-chevron-right"></i></button>
+            <button class="day-tab ${dayOffset === -1 ? 'active' : ''}" data-day="-1"><i class="fas fa-chevron-left"></i> Yesterday</button>
+            <button class="day-tab ${dayOffset === 0 ? 'active' : ''}" data-day="0">Today</button>
+            <button class="day-tab ${dayOffset === 1 ? 'active' : ''}" data-day="1">Tomorrow <i class="fas fa-chevron-right"></i></button>
         </div>
         
         <div class="horoscope-header">
@@ -468,11 +468,18 @@ const showDetailedHoroscope = async (sign, dayOffset = 0) => {
 const attachDayNavigationListeners = (sign) => {
     const dayTabs = document.querySelectorAll('#horoscopeDisplay .day-tab');
     dayTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
+        tab.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const clickedDayOffset = parseInt(tab.getAttribute('data-day'));
+            
+            if (clickedDayOffset === currentDayOffset) return;
+            
             dayTabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
-            const dayOffset = parseInt(tab.getAttribute('data-day'));
-            showDetailedHoroscope(sign, dayOffset);
+            
+            showDetailedHoroscope(sign, clickedDayOffset);
         });
     });
 };
