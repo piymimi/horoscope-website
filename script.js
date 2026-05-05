@@ -276,7 +276,7 @@ const adjustColor = (hex, percent) => {
 const createSignSelector = () => {
     const selector = document.getElementById('signSelector');
     selector.innerHTML = '';
-
+    
     zodiacSigns.forEach(sign => {
         const button = document.createElement('button');
         button.className = 'sign-option';
@@ -287,7 +287,7 @@ const createSignSelector = () => {
         `;
         button.addEventListener('click', () => {
             button.classList.add('active');
-            setTimeout(() => showDetailedHoroscope(sign), 200);
+            setTimeout(() => showDetailedHoroscope(sign, 0), 200);
         });
         selector.appendChild(button);
     });
@@ -305,50 +305,116 @@ const createZodiacCard = (sign) => {
         </div>
     `;
     
-    card.addEventListener('click', () => showDetailedHoroscope(sign));
+    card.addEventListener('click', () => showDetailedHoroscope(sign, 0));
     return card;
 };
 
-const getDailyHoroscope = async (sign) => {
+let currentSelectedSign = null;
+let currentDayOffset = 0;
+
+const getDailyHoroscope = async (sign, dayOffset = 0) => {
     try {
-        const response = await fetch(`https://freehoroscopeapi.com/api/v1/get-horoscope/daily?sign=${sign.toLowerCase()}`);
+        const date = new Date();
+        date.setDate(date.getDate() + dayOffset);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        const response = await fetch(`https://freehoroscopeapi.com/api/v1/get-horoscope/daily?sign=${sign.toLowerCase()}&date=${dateStr}`);
         const data = await response.json();
         
         if (data && data.data && data.horoscope) {
             return {
                 main: data.data.horoscope,
-                love: 'Today brings passionate encounters and deep emotional connections. Focus on meaningful relationships and honest communication.',
-                career: 'Professional opportunities emerge through your natural leadership. Take initiative on projects that align with your ambitious goals.',
-                health: 'Channel your abundant energy into physical activities. Balance intensity with proper rest and recovery.'
+                love: dayOffset === 0 
+                    ? 'Today brings passionate encounters and deep emotional connections. Focus on meaningful relationships and honest communication.'
+                    : dayOffset === -1
+                        ? 'Yesterday\'s energy favored meaningful conversations. Focus on strengthening existing bonds through honest and heartfelt communication.'
+                        : 'Tomorrow brings opportunities for romantic connections. Be open to new encounters and express your true feelings.',
+                career: dayOffset === 0
+                    ? 'Professional opportunities emerge through your natural leadership. Take initiative on projects that align with your ambitious goals.'
+                    : dayOffset === -1
+                        ? 'Yesterday\'s efforts in your career laid groundwork for today\'s opportunities. Reflect on progress and build on your strengths.'
+                        : 'Tomorrow favors career advancement. Stay proactive and seek out new challenges.',
+                health: dayOffset === 0
+                    ? 'Channel your abundant energy into physical activities. Balance intensity with proper rest and recovery.'
+                    : dayOffset === -1
+                        ? 'Yesterday\'s physical activities set the stage for today\'s vitality. Continue your wellness routine.'
+                        : 'Tomorrow is perfect for starting a new fitness or wellness routine.'
             };
         }
         
         return {
-            main: 'Today brings opportunities for personal growth and meaningful connections.',
-            love: 'Focus on communication and building strong relationships through honesty and trust.',
-            career: 'Professional development is favored. Your skills and talents are in high demand.',
-            health: 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
+            main: dayOffset === 0
+                ? 'Today brings opportunities for personal growth and meaningful connections.'
+                : dayOffset === -1
+                    ? 'Yesterday offered chances for personal development. Reflect on those insights today.'
+                    : 'Tomorrow opens doors to new opportunities and connections.',
+            love: dayOffset === 0
+                ? 'Focus on communication and building strong relationships through honesty and trust.'
+                : dayOffset === -1
+                    ? 'Relationships from yesterday provide insights for today. Build on those foundations.'
+                    : 'New romantic opportunities may arise tomorrow. Stay open to connections.',
+            career: dayOffset === 0
+                ? 'Professional development is favored. Your skills and talents are in high demand.'
+                : dayOffset === -1
+                    ? 'Yesterday\'s work experiences prepare you for today\'s challenges. Use those lessons well.'
+                    : 'Career growth opportunities emerge tomorrow. Be ready to seize them.',
+            health: dayOffset === 0
+                ? 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
+                : dayOffset === -1
+                    ? 'Yesterday\'s health practices contribute to today\'s vitality. Maintain your wellness routine.'
+                    : 'Tomorrow is ideal for health improvements and self-care activities.'
         };
     } catch (error) {
         console.error('Error fetching horoscope:', error);
         return {
-            main: 'Today brings opportunities for personal growth and meaningful connections.',
-            love: 'Focus on communication and building strong relationships through honesty and trust.',
-            career: 'Professional development is favored. Your skills and talents are in high demand.',
-            health: 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
+            main: dayOffset === 0
+                ? 'Today brings opportunities for personal growth and meaningful connections.'
+                : dayOffset === -1
+                    ? 'Yesterday offered chances for personal development. Reflect on those insights today.'
+                    : 'Tomorrow opens doors to new opportunities and connections.',
+            love: dayOffset === 0
+                ? 'Focus on communication and building strong relationships through honesty and trust.'
+                : dayOffset === -1
+                    ? 'Relationships from yesterday provide insights for today. Build on those foundations.'
+                    : 'New romantic opportunities may arise tomorrow. Stay open to connections.',
+            career: dayOffset === 0
+                ? 'Professional development is favored. Your skills and talents are in high demand.'
+                : dayOffset === -1
+                    ? 'Yesterday\'s work experiences prepare you for today\'s challenges. Use those lessons well.'
+                    : 'Career growth opportunities emerge tomorrow. Be ready to seize them.',
+            health: dayOffset === 0
+                ? 'Take care of your physical and mental well-being. Balance work with relaxation and self-care.'
+                : dayOffset === -1
+                    ? 'Yesterday\'s health practices contribute to today\'s vitality. Maintain your wellness routine.'
+                    : 'Tomorrow is ideal for health improvements and self-care activities.'
         };
     }
 };
 
-const showDetailedHoroscope = async (sign) => {
+const showDetailedHoroscope = async (sign, dayOffset = 0) => {
+    currentSelectedSign = sign;
+    currentDayOffset = dayOffset;
+    
     const horoscopeDisplay = document.getElementById('horoscopeDisplay');
     const zodiacSelection = document.getElementById('zodiacSelection');
     const zodiacGrid = document.getElementById('zodiacGrid');
     
-    const horoscope = await getDailyHoroscope(sign.name);
+    const horoscope = await getDailyHoroscope(sign.name, dayOffset);
     const luckyNumbers = generateLuckyNumbers();
     
+    const titles = {
+        '-1': "Yesterday",
+        '0': "Today",
+        '1': "Tomorrow"
+    };
+    
     const detailedHtml = `
+        <div class="day-navigation">
+            <button class="day-tab" data-day="-1"><i class="fas fa-chevron-left"></i> Yesterday</button>
+            <button class="day-tab active" data-day="0">Today</button>
+            <button class="day-tab" data-day="1">Tomorrow <i class="fas fa-chevron-right"></i></button>
+        </div>
+        
         <div class="horoscope-header">
             <div class="sign-icon">
                 <i class="fas ${sign.icon}"></i>
@@ -361,7 +427,7 @@ const showDetailedHoroscope = async (sign) => {
         
         <div class="horoscope-content">
             <div class="horoscope-section">
-                <h3 class="section-title"><i class="fas fa-star"></i> Daily Overview</h3>
+                <h3 class="section-title"><i class="fas fa-star"></i> ${titles[dayOffset.toString()]} Overview</h3>
                 <p>${horoscope.main}</p>
             </div>
             
@@ -382,7 +448,7 @@ const showDetailedHoroscope = async (sign) => {
         </div>
         
         <div class="lucky-numbers-section">
-            <h3 class="section-title"><i class="fas fa-clover"></i> Your Lucky Numbers Today</h3>
+            <h3 class="section-title"><i class="fas fa-clover"></i> Your Lucky Numbers ${titles[dayOffset.toString()]}</h3>
             <div class="lucky-numbers">
                 ${luckyNumbers.map(num => `<span>${num}</span>`).join('')}
             </div>
@@ -395,12 +461,29 @@ const showDetailedHoroscope = async (sign) => {
     zodiacSelection.style.display = 'none';
     zodiacGrid.style.display = 'none';
     horoscopeDisplay.scrollIntoView({ behavior: 'smooth' });
+    
+    attachDayNavigationListeners(sign);
+};
+
+const attachDayNavigationListeners = (sign) => {
+    const dayTabs = document.querySelectorAll('#horoscopeDisplay .day-tab');
+    dayTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            dayTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const dayOffset = parseInt(tab.getAttribute('data-day'));
+            showDetailedHoroscope(sign, dayOffset);
+        });
+    });
 };
 
 const hideDetailedHoroscope = () => {
     const horoscopeDisplay = document.getElementById('horoscopeDisplay');
     const zodiacSelection = document.getElementById('zodiacSelection');
     const zodiacGrid = document.getElementById('zodiacGrid');
+    
+    currentSelectedSign = null;
+    currentDayOffset = 0;
     
     horoscopeDisplay.classList.add('hidden');
     zodiacSelection.style.display = 'block';
