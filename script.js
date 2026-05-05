@@ -112,23 +112,31 @@ const getGeneralHoroscope = (dayOffset = 0) => {
 };
 
 const loadGeneralHoroscope = (dayOffset = 0) => {
-    const horoscopeText = document.getElementById('generalHoroscopeText');
-    const horoscopeTitle = document.getElementById('generalHoroscopeTitle');
-    const horoscope = getGeneralHoroscope(dayOffset);
-    
-    const titles = {
-        '-1': "Yesterday's Cosmic Energy",
-        '0': "Today's Cosmic Energy",
-        '1': "Tomorrow's Cosmic Energy"
-    };
-    
-    horoscopeTitle.textContent = titles[dayOffset.toString()];
-    
-    horoscopeText.style.opacity = '0';
-    setTimeout(() => {
-        horoscopeText.textContent = horoscope.text;
-        horoscopeText.style.opacity = '1';
-    }, 300);
+    try {
+        const horoscopeText = document.getElementById('generalHoroscopeText');
+        const horoscopeTitle = document.getElementById('generalHoroscopeTitle');
+        const horoscope = getGeneralHoroscope(dayOffset);
+        
+        const titles = {
+            '-1': "Yesterday's Cosmic Energy",
+            '0': "Today's Cosmic Energy",
+            '1': "Tomorrow's Cosmic Energy"
+        };
+        
+        if (horoscopeTitle && titles[dayOffset.toString()]) {
+            horoscopeTitle.textContent = titles[dayOffset.toString()];
+        }
+        
+        if (horoscopeText && horoscope.text) {
+            horoscopeText.style.opacity = '0';
+            setTimeout(() => {
+                horoscopeText.textContent = horoscope.text;
+                horoscopeText.style.opacity = '1';
+            }, 300);
+        }
+    } catch (error) {
+        console.error('Error loading general horoscope:', error);
+    }
 };
 
 const zodiacSigns = [
@@ -401,33 +409,45 @@ const hideDetailedHoroscope = () => {
 };
 
 const init = () => {
-    const currentDate = new Date();
-    document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
+    try {
+        const currentDate = new Date();
+        const dateElement = document.getElementById('currentDate');
+        if (dateElement) {
+            dateElement.textContent = currentDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
 
-    loadGeneralHoroscope();
-    createSignSelector();
+        loadGeneralHoroscope();
+        createSignSelector();
 
-    const grid = document.getElementById('zodiacGrid');
-    zodiacSigns.forEach(sign => {
-        grid.appendChild(createZodiacCard(sign));
-    });
+        const grid = document.getElementById('zodiacGrid');
+        if (grid) {
+            zodiacSigns.forEach(sign => {
+                grid.appendChild(createZodiacCard(sign));
+            });
+        }
 
-    document.getElementById('backButton').addEventListener('click', hideDetailedHoroscope);
+        const backButton = document.getElementById('backButton');
+        if (backButton) {
+            backButton.addEventListener('click', hideDetailedHoroscope);
+        }
 
-    const dayTabs = document.querySelectorAll('.day-tab');
-    dayTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            dayTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            const dayOffset = parseInt(tab.getAttribute('data-day'));
-            loadGeneralHoroscope(dayOffset);
+        const dayTabs = document.querySelectorAll('.day-tab');
+        dayTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                dayTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const dayOffset = parseInt(tab.getAttribute('data-day'));
+                loadGeneralHoroscope(dayOffset);
+            });
         });
-    });
+    } catch (error) {
+        console.error('Error initializing horoscope app:', error);
+    }
 };
 
 document.addEventListener('DOMContentLoaded', init);
