@@ -164,6 +164,34 @@ function getHoroscopeText(sign, dayOffset) {
     return horoscopeData[sign][dayKey];
 }
 
+function parseHoroscopeContent(horoscopeText) {
+    const sections = {
+        'career': '',
+        'relationships': '',
+        'finance': '',
+        'health': '',
+        'personal': ''
+    };
+
+    const paragraphs = horoscopeText.split('\n\n');
+    
+    paragraphs.forEach((paragraph, index) => {
+        if (paragraph.toLowerCase().includes('career') || paragraph.toLowerCase().includes('professional') || paragraph.toLowerCase().includes('work') || paragraph.toLowerCase().includes('leadership')) {
+            sections.career += paragraph + '\n\n';
+        } else if (paragraph.toLowerCase().includes('romantic') || paragraph.toLowerCase().includes('relationship') || paragraph.toLowerCase().includes('love') || paragraph.toLowerCase().includes('partner')) {
+            sections.relationships += paragraph + '\n\n';
+        } else if (paragraph.toLowerCase().includes('financial') || paragraph.toLowerCase().includes('money') || paragraph.toLowerCase().includes('investment') || paragraph.toLowerCase().includes('career') || paragraph.toLowerCase().includes('invest')) {
+            sections.finance += paragraph + '\n\n';
+        } else if (paragraph.toLowerCase().includes('health') || paragraph.toLowerCase().includes('wellness') || paragraph.toLowerCase().includes('physical')) {
+            sections.health += paragraph + '\n\n';
+        } else {
+            sections.personal += paragraph + '\n\n';
+        }
+    });
+
+    return sections;
+}
+
 async function updateHoroscope() {
     const sign = zodiacSigns.find(s => s.name === currentSign);
     
@@ -198,10 +226,28 @@ async function updateHoroscope() {
     `;
 
     const horoscopeText = getHoroscopeText(currentSign, currentDay);
-    const textElement = display.querySelector('.horoscope-text p');
+    const sections = parseHoroscopeContent(horoscopeText);
+    const textElement = display.querySelector('.horoscope-text');
+
+    let contentHTML = '';
     
-    const paragraphs = horoscopeText.split('\n\n');
-    textElement.innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+    if (sections.career) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-briefcase"></i> Career & Professional</h4>\n<p>${sections.career.trim()}</p>\n`;
+    }
+    if (sections.relationships) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-heart"></i> Love & Relationships</h4>\n<p>${sections.relationships.trim()}</p>\n`;
+    }
+    if (sections.finance) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-coins"></i> Finance & Money</h4>\n<p>${sections.finance.trim()}</p>\n`;
+    }
+    if (sections.health) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-heart-pulse"></i> Health & Wellness</h4>\n<p>${sections.health.trim()}</p>\n`;
+    }
+    if (sections.personal) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-star"></i> Personal Growth</h4>\n<p>${sections.personal.trim()}</p>\n`;
+    }
+
+    textElement.innerHTML = contentHTML;
 
     display.querySelectorAll('.day-tab').forEach(tab => {
         tab.addEventListener('click', (e) => {
@@ -213,9 +259,27 @@ async function updateHoroscope() {
 
 async function loadGeneralHoroscope() {
     const horoscopeText = horoscopeData['Aries'].today;
+    const sections = parseHoroscopeContent(horoscopeText);
     
-    const paragraphs = horoscopeText.split('\n\n');
-    document.getElementById('generalHoroscopeText').innerHTML = paragraphs.map(p => `<p>${p}</p>`).join('');
+    let contentHTML = '';
+    
+    if (sections.career) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-briefcase"></i> Career & Professional</h4>\n<p>${sections.career.trim()}</p>\n`;
+    }
+    if (sections.relationships) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-heart"></i> Love & Relationships</h4>\n<p>${sections.relationships.trim()}</p>\n`;
+    }
+    if (sections.finance) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-coins"></i> Finance & Money</h4>\n<p>${sections.finance.trim()}</p>\n`;
+    }
+    if (sections.health) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-heart-pulse"></i> Health & Wellness</h4>\n<p>${sections.health.trim()}</p>\n`;
+    }
+    if (sections.personal) {
+        contentHTML += `<h4 class="section-heading"><i class="fas fa-star"></i> Personal Growth</h4>\n<p>${sections.personal.trim()}</p>\n`;
+    }
+    
+    document.getElementById('generalHoroscopeText').innerHTML = contentHTML;
 }
 
 document.addEventListener('DOMContentLoaded', init);

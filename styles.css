@@ -754,3 +754,37 @@ header h1 {
         font-size: 0.85rem;
     }
 }
+
+.section-heading {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-gold);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.section-heading i {
+    font-size: 1rem;
+}
+
+.horoscope-text h4 {
+    margin: 0 0 15px 0;
+}
+
+.horoscope-text h4:first-child {
+    margin-top: 0;
+}
+
+.horoscope-text p {
+    margin-bottom: 20px;
+    line-height: 1.7;
+}
+
+.horoscope-text p:last-child {
+    margin-bottom: 0;
+}
