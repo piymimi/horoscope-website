@@ -188,4 +188,4 @@ async function loadGeneralHoroscope() {
     document.getElementById('generalHoroscopeText').textContent = horoscopeText;
 }
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', init);// Cache bust: 1778082994
