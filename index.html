@@ -19,14 +19,6 @@
             <p id="currentDate" class="date"></p>
         </header>
 
-        <div id="zodiacSelection" class="zodiac-selection fade-in">
-            <div class="section-header">
-                <h2><i class="fas fa-star"></i> Choose Your Zodiac Sign</h2>
-                <p class="section-subtitle">Discover what the stars have aligned for you today</p>
-            </div>
-            <div id="zodiacGrid" class="zodiac-grid"></div>
-        </div>
-
         <div id="generalHoroscope" class="general-horoscope">
             <div class="day-navigation">
                 <button class="day-tab" data-day="-1"><i class="fas fa-chevron-left"></i> Yesterday</button>
@@ -43,10 +35,19 @@
                 </div>
             </div>
         </div>
+
+        <div id="zodiacSelection" class="zodiac-selection fade-in">
+            <div class="section-header">
+                <h2><i class="fas fa-star"></i> Choose Your Zodiac Sign</h2>
+                <p class="section-subtitle">Discover what the stars have aligned for you today</p>
+            </div>
+            <div id="zodiacGrid" class="zodiac-grid"></div>
+        </div>
+
         <style>
             #generalHoroscope {
                 display: block !important;
-                margin: 40px 0;
+                margin: 30px 0;
             }
             #horoscopeDisplay .day-navigation {
                 display: flex !important;
