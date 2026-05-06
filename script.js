@@ -13,77 +13,61 @@ const zodiacSigns = [
     { name: 'Pisces', symbol: '♓', dates: 'Feb 19 - Mar 20', element: 'water' }
 ];
 
-const horoscopeData = {
-    'Aries': {
-        today: 'Today is perfect for new beginnings. Your energy is high and people are drawn to your confidence.',
-        yesterday: 'Yesterday was a day of reflection. You learned valuable lessons about patience.',
-        tomorrow: 'Tomorrow brings exciting opportunities for career advancement. Stay focused.'
-    },
-    'Taurus': {
-        today: 'Financial matters look positive today. Consider saving rather than spending.',
-        yesterday: 'You showed great strength yesterday in difficult situations.',
-        tomorrow: 'Romance is in the air tomorrow. Keep an open heart and mind.'
-    },
-    'Gemini': {
-        today: 'Communication flows easily today. It\'s a great time for important conversations.',
-        yesterday: 'Your adaptability helped you navigate challenges yesterday.',
-        tomorrow: 'Tomorrow brings social opportunities. Network and connect with others.'
-    },
-    'Cancer': {
-        today: 'Home and family take priority today. Create a peaceful environment.',
-        yesterday: 'Your emotional intelligence was a strength yesterday.',
-        tomorrow: 'Tomorrow favors self-care. Take time for yourself.'
-    },
-    'Leo': {
-        today: 'Your creativity shines today. Express yourself boldly and confidently.',
-        yesterday: 'You inspired others yesterday with your passion.',
-        tomorrow: 'Recognition for your hard work is coming tomorrow.'
-    },
-    'Virgo': {
-        today: 'Details matter today. Your analytical skills will solve important problems.',
-        yesterday: 'Your organization skills were impressive yesterday.',
-        tomorrow: 'Tomorrow is perfect for planning and preparation.'
-    },
-    'Libra': {
-        today: 'Balance and harmony are your focus today. Seek compromise in conflicts.',
-        yesterday: 'Your diplomacy helped resolve tensions yesterday.',
-        tomorrow: 'Partnerships bring positive energy tomorrow.'
-    },
-    'Scorpio': {
-        today: 'Your intuition is strong today. Trust your gut feelings.',
-        yesterday: 'Your depth and insight impressed others yesterday.',
-        tomorrow: 'Transformation is possible tomorrow. Embrace change.'
-    },
-    'Sagittarius': {
-        today: 'Adventure calls today. Explore new ideas and experiences.',
-        yesterday: 'Your optimism lifted spirits yesterday.',
-        tomorrow: 'Learning opportunities present themselves tomorrow.'
-    },
-    'Capricorn': {
-        today: 'Career focus pays off today. Your dedication doesn\'t go unnoticed.',
-        yesterday: 'Your discipline was admirable yesterday.',
-        tomorrow: 'Long-term plans gain momentum tomorrow.'
-    },
-    'Aquarius': {
-        today: 'Innovation is key today. Think outside conventional solutions.',
-        yesterday: 'Your unique perspective was valuable yesterday.',
-        tomorrow: 'Community involvement brings fulfillment tomorrow.'
-    },
-    'Pisces': {
-        today: 'Your compassion heals today. Offer support to those in need.',
-        yesterday: 'Your creativity was inspiring yesterday.',
-        tomorrow: 'Spiritual growth is favored tomorrow. Meditate or reflect.'
-    }
+const horoscopeCache = {
+    'Aries': { today: null, yesterday: null, tomorrow: null },
+    'Taurus': { today: null, yesterday: null, tomorrow: null },
+    'Gemini': { today: null, yesterday: null, tomorrow: null },
+    'Cancer': { today: null, yesterday: null, tomorrow: null },
+    'Leo': { today: null, yesterday: null, tomorrow: null },
+    'Virgo': { today: null, yesterday: null, tomorrow: null },
+    'Libra': { today: null, yesterday: null, tomorrow: null },
+    'Scorpio': { today: null, yesterday: null, tomorrow: null },
+    'Sagittarius': { today: null, yesterday: null, tomorrow: null },
+    'Capricorn': { today: null, yesterday: null, tomorrow: null },
+    'Aquarius': { today: null, yesterday: null, tomorrow: null },
+    'Pisces': { today: null, yesterday: null, tomorrow: null }
 };
+
+async function fetchHoroscope(sign, dayOffset) {
+    const cacheKey = dayOffset === -1 ? 'yesterday' : dayOffset === 1 ? 'tomorrow' : 'today';
+    
+    if (horoscopeCache[sign][cacheKey]) {
+        return horoscopeCache[sign][cacheKey];
+    }
+
+    try {
+        const date = new Date();
+        date.setDate(date.getDate() + dayOffset);
+        const dateString = date.toISOString().split('T')[0];
+        
+        const response = await fetch(`https://api.api-ninjas.com/v1/horoscope?zodiac=${sign.toLowerCase()}&date=${dateString}`, {
+            headers: {
+                'X-Api-Key': 'demo',
+                'accept': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('API request failed');
+        }
+        
+        const data = await response.json();
+        horoscopeCache[sign][cacheKey] = data.horoscope;
+        return data.horoscope;
+    } catch (error) {
+        console.error('Error fetching horoscope:', error);
+        return 'Unable to fetch horoscope at this time. Please try again later.';
+    }
+}
 
 let currentSign = null;
 let currentDay = 0;
 
-function init() {
+async function init() {
     displayCurrentDate();
     renderZodiacGrid();
     setupEventListeners();
-    loadGeneralHoroscope();
+    await loadGeneralHoroscope();
 }
 
 function displayCurrentDate() {
@@ -121,10 +105,23 @@ function setupEventListeners() {
         document.getElementById('zodiacSelection').classList.remove('hidden');
     });
 
-    document.querySelectorAll('.day-tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
+    document.querySelectorAll('#generalHoroscope .day-tab').forEach(tab => {
+        tab.addEventListener('click', async (e) => {
             const day = parseInt(e.currentTarget.dataset.day);
-            setDay(day);
+            const horoscopeText = await fetchHoroscope('Aries', day);
+            document.getElementById('generalHoroscopeText').textContent = horoscopeText;
+            
+            const dayLabels = {
+                '-1': "Yesterday's Cosmic Energy",
+                '0': "Today's Cosmic Energy",
+                '1': "Tomorrow's Cosmic Energy"
+            };
+            
+            document.getElementById('generalHoroscopeTitle').textContent = dayLabels[day.toString()];
+            
+            document.querySelectorAll('#generalHoroscope .day-tab').forEach(t => {
+                t.classList.toggle('active', parseInt(t.dataset.day) === day);
+            });
         });
     });
 }
@@ -146,15 +143,12 @@ function setDay(day) {
     }
 }
 
-function updateHoroscope() {
+async function updateHoroscope() {
     const sign = zodiacSigns.find(s => s.name === currentSign);
-    const horoscope = horoscopeData[currentSign];
     
     let dayText = 'Today';
     if (currentDay === -1) dayText = 'Yesterday';
     if (currentDay === 1) dayText = 'Tomorrow';
-
-    const dayKey = currentDay === -1 ? 'yesterday' : currentDay === 1 ? 'tomorrow' : 'today';
 
     const display = document.getElementById('detailedHoroscope');
     display.innerHTML = `
@@ -177,10 +171,14 @@ function updateHoroscope() {
             </div>
             <div class="horoscope-text">
                 <h3>${dayText}'s Horoscope</h3>
-                <p>${horoscope[dayKey]}</p>
+                <p class="loading">Loading horoscope...</p>
             </div>
         </div>
     `;
+
+    const horoscopeText = await fetchHoroscope(currentSign, currentDay);
+    const textElement = display.querySelector('.horoscope-text p');
+    textElement.textContent = horoscopeText;
 
     display.querySelectorAll('.day-tab').forEach(tab => {
         tab.addEventListener('click', (e) => {
@@ -190,8 +188,9 @@ function updateHoroscope() {
     });
 }
 
-function loadGeneralHoroscope() {
-    document.getElementById('generalHoroscopeText').textContent = horoscopeData['Aries'].today;
+async function loadGeneralHoroscope() {
+    const horoscopeText = await fetchHoroscope('Aries', 0);
+    document.getElementById('generalHoroscopeText').textContent = horoscopeText;
 }
 
 document.addEventListener('DOMContentLoaded', init);
