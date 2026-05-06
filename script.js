@@ -40,20 +40,15 @@ async function fetchHoroscope(sign, dayOffset) {
         date.setDate(date.getDate() + dayOffset);
         const dateString = date.toISOString().split('T')[0];
         
-        const response = await fetch(`https://api.api-ninjas.com/v1/horoscope?zodiac=${sign.toLowerCase()}&date=${dateString}`, {
-            headers: {
-                'X-Api-Key': 'demo',
-                'accept': 'application/json'
-            }
-        });
+        const response = await fetch(`https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${sign.toLowerCase()}`);
         
         if (!response.ok) {
             throw new Error('API request failed');
         }
         
         const data = await response.json();
-        horoscopeCache[sign][cacheKey] = data.horoscope;
-        return data.horoscope;
+        horoscopeCache[sign][cacheKey] = data.data.horoscope;
+        return data.data.horoscope;
     } catch (error) {
         console.error('Error fetching horoscope:', error);
         return 'Unable to fetch horoscope at this time. Please try again later.';
